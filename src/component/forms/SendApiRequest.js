@@ -1,12 +1,14 @@
 import getAuthHeaders from "./getAuthHeader";
+import { useNavigate } from "react-router-dom";
 
 // ✅ Define your Django server base URL
 const school_accronym = localStorage.getItem("school_accronym")
-const API_BASE_URL = `http://${school_accronym}.localhost:8000`;
+const API_BASE_URL = `http://${school_accronym}.localhost:8000/api-tenant`;
 
 export async function SendApiRequest(endpoint, method = "GET", body = null, extraHeaders = {}) {
   const refreshToken = localStorage.getItem("refreshToken");
   const accessToken = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // ✅ Proper URL construction
   const isAbsolute = endpoint.startsWith("http://") || endpoint.startsWith("https://");

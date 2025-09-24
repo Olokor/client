@@ -12,6 +12,8 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Load saved school_accronym
   useEffect(() => {
@@ -33,44 +35,59 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      const response = await SendApiRequest(
-        `http://${school_accronym}.localhost:8000/api-tenant/token/`,
-        "POST",
-        {
-          username: formData.email,
-          password: formData.password,
-        }
-      );
-
-      // Save school_accronym for future logins
-      localStorage.setItem("school_accronym", school_accronym);
-
-      // Save tokens
-      localStorage.setItem("token", response.access);
-      localStorage.setItem("refreshToken", response.refresh);
-
-      console.log("Login response:", response);
-
-      navigate("/");
-    } catch (err) {
-      console.error("Login failed:", err);
-    } finally {
-      setIsLoading(false);
+  const response = await SendApiRequest(
+    `http://${school_accronym}.localhost:8000/api-tenant/token/`,
+    "POST",
+    {
+      username: formData.email,
+      password: formData.password,
     }
+  );
+
+  localStorage.setItem("school_accronym", school_accronym);
+  localStorage.setItem("token", response.access);
+  localStorage.setItem("refreshToken", response.refresh);
+
+  setSuccessMessage("✅ Login successful! Redirecting...");
+  setErrorMessage(""); // clear any previous error
+
+  setTimeout(() => {
+    navigate("/dashboard");
+  }, 1500);
+} catch (err) {
+  setErrorMessage("❌ Login failed. Please check your credentials.");
+  setSuccessMessage("");
+} finally{
+  setIsLoading(false);
+}
   };
 
   return (
     <div className="h-full flex items-center justify-center p-8">
+      
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
           <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
           <p className="text-gray-600">Please sign in to your account</p>
         </div>
+        {successMessage && (
+        <div className="p-3 rounded-lg bg-green-100 text-green-700 text-sm font-medium">
+          {successMessage}
+        </div>
+      )}
 
+      {errorMessage && (
+        <div className="p-3 rounded-lg bg-red-100 text-red-700 text-sm font-medium">
+          {errorMessage}
+        </div>
+      )}
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Only show input if no saved school_accronym */}
+          <label className="text-sm font-medium text-gray-700">
+                
+              </label>
           {!localStorage.getItem("school_accronym") && (
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
