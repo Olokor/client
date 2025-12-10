@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -18,9 +18,30 @@ import {
   User,
 } from "lucide-react";
 
-export default function SideNavbar({ isSidebarOpen, setIsSidebarOpen }) {
+interface SideNavbarProps {
+  isSidebarOpen?: boolean;
+  setIsSidebarOpen: (isOpen: boolean) => void;
+}
+
+interface SidebarItemProps {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  collapsed?: boolean;
+  onClick?: () => void;
+}
+
+interface SidebarSubItemProps {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+}
+
+export default function SideNavbar({ isSidebarOpen = false, setIsSidebarOpen }: SideNavbarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isUsersDropdownOpen, setIsUsersDropdownOpen] = useState(false);
+  const location = useLocation();
 
   // Close sidebar when clicking outside on mobile
   useEffect(() => {
@@ -107,8 +128,8 @@ export default function SideNavbar({ isSidebarOpen, setIsSidebarOpen }) {
             <button
               onClick={handleUsersDropdownToggle}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-white/10 ${
-                window.location.pathname.includes('/admin/teachers') || 
-                window.location.pathname.includes('/admin/students') 
+                location.pathname.includes('/admin/teachers') || 
+                location.pathname.includes('/admin/students') 
                   ? 'bg-white/20' 
                   : ''
               }`}
@@ -190,7 +211,7 @@ export default function SideNavbar({ isSidebarOpen, setIsSidebarOpen }) {
   );
 }
 
-const SidebarItem = ({ to, icon, label, collapsed, onClick }) => {
+const SidebarItem = ({ to, icon, label, collapsed, onClick }: SidebarItemProps) => {
   return (
     <NavLink
       to={to}
@@ -207,7 +228,7 @@ const SidebarItem = ({ to, icon, label, collapsed, onClick }) => {
   );
 };
 
-const SidebarSubItem = ({ to, icon, label, onClick }) => {
+const SidebarSubItem = ({ to, icon, label, onClick }: SidebarSubItemProps) => {
   return (
     <NavLink
       to={to}

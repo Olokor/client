@@ -2,29 +2,29 @@ import { useState } from "react";
 import { User, BookOpen, Trash2, Edit, Plus } from "lucide-react";
 import useFetch from "../manager/UseFetch";
 import { SendApiRequest } from "../component/forms/SendApiRequest";
-import { useNavigate } from "react-router-dom";
+import { TeachersResponse, Teacher } from "../types";
 
 export default function ManageTeachers() {
-  const { data: teachers, loading, error } = useFetch("admin/get-all-teachers");
+  const { data: teachers, loading, error } = useFetch<TeachersResponse>("admin/get-all-teachers");
   const [refresh, setRefresh] = useState(false);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this teacher?")) return;
     try {
       await SendApiRequest(`/admin/delete-teacher/${id}/`, "DELETE");
       setRefresh(!refresh); // trigger refetch
-    } catch (err) {
+    } catch (err: any) {
       alert("Failed to delete teacher: " + err.message);
     }
   };
 
-  const handleAssign = async (id) => {
+  const handleAssign = async (id: number) => {
     const subject = prompt("Enter subject to assign:");
     if (!subject) return;
     try {
       await SendApiRequest(`/admin/assign-subject/${id}/`, "POST", { subject });
       setRefresh(!refresh);
-    } catch (err) {
+    } catch (err: any) {
       alert("Failed to assign subject: " + err.message);
     }
   };
@@ -47,7 +47,7 @@ export default function ManageTeachers() {
 
       {/* Teacher Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {teachers?.results?.map((teacher) => (
+        {teachers?.results?.map((teacher: Teacher) => (
           <div
             key={teacher.id}
             className="bg-white rounded-xl shadow hover:shadow-lg transition-all border border-gray-200"

@@ -2,18 +2,19 @@ import { useState, useEffect } from "react";
 import { SendApiRequest } from "./SendApiRequest";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { LoginFormData, LoginResponse } from "../../types";
 
 const LoginForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
-  const [school_accronym, setSchool_accronym] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [school_accronym, setSchool_accronym] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Load saved school_accronym
   useEffect(() => {
@@ -23,43 +24,43 @@ const LoginForm = () => {
     }
   }, []);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-  const response = await SendApiRequest(
-    `http://${school_accronym}.localhost:8000/api-tenant/token/`,
-    "POST",
-    {
-      username: formData.email,
-      password: formData.password,
+      const response: LoginResponse = await SendApiRequest<LoginResponse>(
+        `http://${school_accronym}.localhost:8000/api-tenant/token/`,
+        "POST",
+        {
+          username: formData.email,
+          password: formData.password,
+        }
+      );
+
+      localStorage.setItem("school_accronym", school_accronym);
+      localStorage.setItem("token", response.access);
+      localStorage.setItem("refreshToken", response.refresh);
+
+      setSuccessMessage("✅ Login successful! Redirecting...");
+      setErrorMessage(""); // clear any previous error
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (err: any) {
+      setErrorMessage("❌ Login failed. Please check your credentials.");
+      setSuccessMessage("");
+    } finally {
+      setIsLoading(false);
     }
-  );
-
-  localStorage.setItem("school_accronym", school_accronym);
-  localStorage.setItem("token", response.access);
-  localStorage.setItem("refreshToken", response.refresh);
-
-  setSuccessMessage("✅ Login successful! Redirecting...");
-  setErrorMessage(""); // clear any previous error
-
-  setTimeout(() => {
-    navigate("/dashboard");
-  }, 1500);
-} catch (err) {
-  setErrorMessage("❌ Login failed. Please check your credentials.");
-  setSuccessMessage("");
-} finally{
-  setIsLoading(false);
-}
   };
 
   return (

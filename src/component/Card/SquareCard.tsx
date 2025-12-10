@@ -1,6 +1,18 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
-export const SquareCard = ({ title, value, icon, color = "from-blue-500 to-purple-600" }) => {
+interface SquareCardProps {
+  title: string;
+  value: string | number;
+  icon?: ReactNode;
+  color?: string;
+}
+
+export const SquareCard: React.FC<SquareCardProps> = ({ 
+  title, 
+  value, 
+  icon, 
+  color = "from-blue-500 to-purple-600" 
+}) => {
   return (
     <div className={`flex flex-col justify-center items-center rounded-2xl shadow-md bg-gradient-to-r ${color} text-white w-full aspect-square p-4`}>
       {icon && <div className="mb-2">{icon}</div>}

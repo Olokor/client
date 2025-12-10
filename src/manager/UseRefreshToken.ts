@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { TokenRefreshResponse } from "../types";
 
 export default function UseRefreshToken() {
   const navigate = useNavigate();
 
-  return async (refreshToken) => {
+  return async (refreshToken: string): Promise<string | null> => {
     try {
       const response = await fetch("/user-auth/token/refresh/", {
         method: "POST",
@@ -13,14 +14,14 @@ export default function UseRefreshToken() {
 
       if (!response.ok) {
         // ❌ Refresh token invalid — force logout
-        console.log("removing tokens")
+        console.log("removing tokens");
         localStorage.removeItem("token");
         localStorage.removeItem("refresh");
         navigate("/login");
         return null;
       }
 
-      const data = await response.json();
+      const data: TokenRefreshResponse = await response.json();
       localStorage.setItem("token", data.access);
       return data.access;
     } catch (err) {

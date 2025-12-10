@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Bell, LogOut, User, Settings, ChevronDown } from "lucide-react";
+import { User as UserType } from "../../types";
 
-const TopNavbar = ({ user, onLogout }) => {
+interface TopNavbarProps {
+  user?: UserType;
+  onLogout?: () => void;
+}
+
+const TopNavbar = ({ user, onLogout }: TopNavbarProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -76,6 +82,3 @@ const TopNavbar = ({ user, onLogout }) => {
 };
 
 export default TopNavbar;
-
-
-

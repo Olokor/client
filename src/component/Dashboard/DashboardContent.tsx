@@ -2,11 +2,17 @@ import { Users, User, BookOpen, TrendingUp, GraduationCap } from "lucide-react";
 import useFetch from "../../manager/UseFetch";
 import { SquareCard } from "../Card/SquareCard";
 import { RectCard } from "../Card/RectCard";
+import { TeachersResponse } from "../../types";
+
+interface ApiResponse<T> {
+  count?: number;
+  results?: T[];
+}
 
 export default function DashboardContent() {
-  const { data: students, loading: studentsLoading } = useFetch("admin/get-all-students");
-  const { data: teachers, loading: teachersLoading } = useFetch("admin/get-all-teachers");
-  const { data: classes, loading: classesLoading } = useFetch("admin/get-all-class");
+  const { data: students, loading: studentsLoading } = useFetch<ApiResponse<any>>("admin/get-all-students");
+  const { data: teachers, loading: teachersLoading } = useFetch<TeachersResponse>("admin/get-all-teachers");
+  const { data: classes, loading: classesLoading } = useFetch<ApiResponse<any>>("admin/get-all-class");
 
   return (
     <div className="p-6 space-y-6 bg-gray-50">

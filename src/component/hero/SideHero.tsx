@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+
+interface Slide {
+  image: string;
+  quote: string;
+  author: string;
+}
 
 // Hero Component with sliding images and quotes
-export default function HeroSlider  ()  {
-  const [currentSlide, setCurrentSlide] = useState(0);
+export default function HeroSlider() {
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
   
-  const slides = [
+  const slides: Slide[] = [
     {
       image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
       quote: "Education is the most powerful weapon which you can use to change the world.",

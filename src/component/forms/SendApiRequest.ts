@@ -1,14 +1,18 @@
 import getAuthHeaders from "./getAuthHeader";
-import { useNavigate } from "react-router-dom";
+import { HTTPMethod } from "../../types";
 
 // ✅ Define your Django server base URL
-const school_accronym = localStorage.getItem("school_accronym")
+const school_accronym = localStorage.getItem("school_accronym");
 const API_BASE_URL = `http://${school_accronym}.localhost:8000/api-tenant`;
 
-export async function SendApiRequest(endpoint, method = "GET", body = null, extraHeaders = {}) {
+export async function SendApiRequest<T = any>(
+  endpoint: string,
+  method: HTTPMethod = "GET",
+  body: any = null,
+  extraHeaders: Record<string, string> = {}
+): Promise<T> {
   const refreshToken = localStorage.getItem("refreshToken");
   const accessToken = localStorage.getItem("token");
-  const navigate = useNavigate();
 
   // ✅ Proper URL construction
   const isAbsolute = endpoint.startsWith("http://") || endpoint.startsWith("https://");
@@ -17,7 +21,7 @@ export async function SendApiRequest(endpoint, method = "GET", body = null, extr
   console.log("🌐 Making request to:", url); // Debug log
 
   // ✅ Clean headers object
-  const headers = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...extraHeaders,
   };
@@ -39,7 +43,7 @@ export async function SendApiRequest(endpoint, method = "GET", body = null, extr
 
   console.log("📋 Request headers:", headers); // Debug log
 
-  let response;
+  let response: Response;
   try {
     response = await fetch(url, {
       method,
@@ -48,7 +52,7 @@ export async function SendApiRequest(endpoint, method = "GET", body = null, extr
     });
 
     console.log("📡 Response status:", response.status); // Debug log
-  } catch (fetchError) {
+  } catch (fetchError: any) {
     console.error("❌ Fetch error:", fetchError);
     throw new Error(`Network error: ${fetchError.message}`);
   }
@@ -78,7 +82,7 @@ export async function SendApiRequest(endpoint, method = "GET", body = null, extr
       console.log("✅ Token refreshed successfully");
 
       // ✅ Retry with new token and clean headers
-      const retryHeaders = {
+      const retryHeaders: Record<string, string> = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${refreshData.access}`,
         ...extraHeaders,
