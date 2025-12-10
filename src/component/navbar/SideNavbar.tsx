@@ -159,20 +159,26 @@ export default function SideNavbar({ isSidebarOpen = false, setIsSidebarOpen }: 
                 <SidebarSubItem
                   to="/admin/students"
                   icon={<User className="w-4 h-4" />}
-                  label="Students"
+                  label="All Students"
+                  onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
+                />
+                <SidebarSubItem
+                  to="/admin/students/register"
+                  icon={<UserPlus className="w-4 h-4" />}
+                  label="Register Student"
                   onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
                 />
               </div>
             )}
           </div>
 
-          <SidebarItem
+          {/* <SidebarItem
             to="/admin/create-user"
             icon={<UserPlus className="w-5 h-5" />}
             label="Create Teacher/Student"
             collapsed={isCollapsed}
             onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
-          />
+          /> */}
           <SidebarItem
             to="/admin/classes"
             icon={<BookOpen className="w-5 h-5" />}
